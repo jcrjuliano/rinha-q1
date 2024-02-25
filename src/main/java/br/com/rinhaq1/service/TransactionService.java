@@ -12,6 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Service
@@ -56,7 +62,7 @@ public class TransactionService {
     }
 
     private void saveTransaction(ClienteEntity cliente, TransactionParams params) {
-        Date data = new Date(System.currentTimeMillis());
+        OffsetDateTime data = OffsetDateTime.now(ZoneOffset.UTC);
         TransactionEntity transactionToSave = new TransactionEntity(cliente, params.valor(), params.tipo(), params.descricao(), data);
 
         transactionRepository.save(transactionToSave);

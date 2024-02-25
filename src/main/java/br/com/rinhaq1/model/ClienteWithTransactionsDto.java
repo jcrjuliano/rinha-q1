@@ -2,10 +2,15 @@ package br.com.rinhaq1.model;
 
 import br.com.rinhaq1.domain.entity.ClienteEntity;
 import br.com.rinhaq1.domain.entity.TransactionEntity;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.sql.Date;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
+@Data
+@NoArgsConstructor
 public class ClienteWithTransactionsDto {
     private Saldo saldo;
     private List<Transaction> lastTransactions;
@@ -15,28 +20,11 @@ public class ClienteWithTransactionsDto {
         this.lastTransactions = lastTransactions;
     }
 
-    public ClienteWithTransactionsDto(){}
-
-    public Saldo getSaldo() {
-        return saldo;
-    }
-
-    public void setSaldo(Saldo saldo) {
-        this.saldo = saldo;
-    }
-
-    public List<Transaction> getLastTransactions() {
-        return lastTransactions;
-    }
-
-    public void setLastTransactions(List<Transaction> lastTransactions) {
-        this.lastTransactions = lastTransactions;
-    }
-
     public static ClienteWithTransactionsDto fromEntity(ClienteEntity cliente, List<TransactionEntity> transactions) {
+        OffsetDateTime data = OffsetDateTime.now(ZoneOffset.UTC);
         Saldo saldo = new Saldo(
                 cliente.getSaldo(),
-                new Date(System.currentTimeMillis()),
+                data,
                 cliente.getLimite()
         );
 

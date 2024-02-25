@@ -8,11 +8,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.sql.Date;
+import java.time.OffsetDateTime;
 
 @Entity
-@Table(name = "transaction")
+@Table(name = "tb_transactions")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class TransactionEntity {
 
     @Id
@@ -33,63 +39,13 @@ public class TransactionEntity {
      private String descricao;
 
     @Column(name = "realizada_em")
-    private Date realizadaEm;
+    private OffsetDateTime realizadaEm;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getValor() {
-        return valor;
-    }
-
-    public void setValor(Long valor) {
-        this.valor = valor;
-    }
-
-    public char getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(char tipo) {
-        this.tipo = tipo;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public ClienteEntity getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(ClienteEntity cliente) {
-        this.cliente = cliente;
-    }
-
-    public Date getRealizadaEm() {
-        return realizadaEm;
-    }
-
-    public void setRealizadaEm(Date realizadaEm) {
-        this.realizadaEm = realizadaEm;
-    }
-
-    public TransactionEntity(ClienteEntity cliente, Long valor, char tipo, String descricao, Date realizadaEm) {
+    public TransactionEntity(ClienteEntity cliente, Long valor, char tipo, String descricao, OffsetDateTime data) {
         this.cliente = cliente;
         this.valor = valor;
         this.tipo = tipo;
         this.descricao = descricao;
-        this.realizadaEm = realizadaEm;
+        this.realizadaEm = data;
     }
-
-    public TransactionEntity(){}
 }
