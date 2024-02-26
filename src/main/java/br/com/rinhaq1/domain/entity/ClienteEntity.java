@@ -8,15 +8,24 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Entity
 @Table(name = "tb_clientes")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ClienteEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name")
+    private String nome;
 
     @Column(name = "limite")
     private Long limite;
@@ -24,42 +33,17 @@ public class ClienteEntity {
     @Column(name = "saldo")
     private Long saldo;
 
-    public ClienteEntity(Long limite, Long saldo) {
+    public ClienteEntity(String nome, Long limite, Long saldo) {
+        this.nome = nome;
         this.limite = limite;
         this.saldo = saldo;
     }
-    public ClienteEntity() {
-    }
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getLimite() {
-        return limite;
-    }
-
-    public void setLimite(Long limite) {
-        this.limite = limite;
-    }
-
-    public Long getSaldo() {
-        return saldo;
-    }
-
-    public void setSaldo(Long saldo) {
-        this.saldo = saldo;
-    }
-
 
     public static ClienteEntity fromDto(CreateClienteDto dto) {
-        return new ClienteEntity(dto.limite(), dto.saldo());
+        return new ClienteEntity(dto.nome(), dto.limite(), dto.saldo());
     }
 
     public ClienteReturnDto toDto() {
-        return new ClienteReturnDto(id, limite, saldo);
+        return new ClienteReturnDto(id, nome, limite, saldo);
     }
 }

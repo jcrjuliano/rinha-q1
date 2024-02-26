@@ -14,11 +14,11 @@ services:
       - ./002_dml.sql:/docker-entrypoint-initdb.d/02_dml.sql
     networks:
       - rinha-q1
-    deploy:
-      resources:
-        limits:
-            cpus: "0.13"
-            memory: "140MB"
+#    deploy:
+#      resources:
+#        limits:
+#            cpus: "0.6"
+#            memory: "210MB"
 
 
   api01:
@@ -32,11 +32,11 @@ services:
       - DB_HOST=postgres
     networks:
       - rinha-q1
-    deploy:
-      resources:
-        limits:
-          cpus: "0.6"
-          memory: "200MB"
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: "0.35"
+#          memory: "160MB"
 
   api02:
     build:
@@ -50,11 +50,11 @@ services:
       - "8082:8080"
     networks:
       - rinha-q1
-    deploy:
-      resources:
-        limits:
-          cpus: "0.6"
-          memory: "200MB"
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: "0.35"
+#          memory: "160MB"
 
   nginx:
     image: nginx:latest
@@ -68,11 +68,11 @@ services:
       - "9999:9999"
     networks:
       - rinha-q1
-    deploy:
-      resources:
-        limits:
-          cpus: "0.17"
-          memory: "10MB"
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: "0.2"
+#          memory: "20MB"
 
 
 networks:

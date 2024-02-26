@@ -43,7 +43,8 @@ public class TransactionService {
 
     private TransactionDTO validateAndSaveCreditTransaction(ClienteEntity cliente, TransactionParams params) {
         Long saldoToAdd = params.valor() > 0 ? params.valor() : 0;
-        cliente.setSaldo(cliente.getSaldo() + saldoToAdd);
+        Long saldo = cliente.getSaldo() == null ? 0 : cliente.getSaldo();
+        cliente.setSaldo(saldo + saldoToAdd);
         clienteRepository.save(cliente);
         saveTransaction(cliente, params);
 
@@ -51,7 +52,8 @@ public class TransactionService {
     }
 
     private TransactionDTO validateAndSaveDebitTransaction(ClienteEntity cliente, TransactionParams params) throws UnprocessableEntity {
-        Long newFunds = cliente.getSaldo() - params.valor();
+        Long currentSaldo = cliente.getSaldo() == null ? 0 : cliente.getSaldo();
+        Long newFunds = currentSaldo - params.valor();
         if (newFunds >= cliente.getLimite() * -1) {
             cliente.setSaldo(newFunds);
             clienteRepository.save(cliente);
