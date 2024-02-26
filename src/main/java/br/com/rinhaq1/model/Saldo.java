@@ -12,7 +12,7 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 public class Saldo {
     private Long total;
-    private OffsetDateTime dataExtrato;
+    private OffsetDateTime data_extrato;
     private Long limite;
 
 }
