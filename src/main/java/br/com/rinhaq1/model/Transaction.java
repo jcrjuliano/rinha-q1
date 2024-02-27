@@ -1,6 +1,7 @@
 package br.com.rinhaq1.model;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -15,5 +16,6 @@ public class Transaction {
 
     private String descricao;
 
-    private OffsetDateTime realizada_em;
+    @JsonProperty("realizada_em")
+    private OffsetDateTime realizadaEm;
 }

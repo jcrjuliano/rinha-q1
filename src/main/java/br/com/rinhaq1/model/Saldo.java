@@ -1,5 +1,6 @@
 package br.com.rinhaq1.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,9 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 public class Saldo {
     private Long total;
-    private OffsetDateTime data_extrato;
+
+    @JsonProperty("data_extrato")
+    private OffsetDateTime dataExtrato;
     private Long limite;
 
 }
