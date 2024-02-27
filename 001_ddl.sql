@@ -12,7 +12,7 @@ CREATE TABLE TB_CLIENTES (
 
 CREATE TABLE TB_TRANSACTIONS (
 	id BIGSERIAL NOT NULL,
-	descricao VARCHAR(255) NOT NULL CHECK (trim(descricao) IS NOT NULL),
+	descricao VARCHAR(10) NOT NULL CHECK (trim(descricao) IS NOT NULL),
 	realizada_em timestamptz NULL,
 	tipo BPCHAR(1) NULL,
 	valor INT8 NULL,

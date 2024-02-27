@@ -30,8 +30,11 @@ public class GetClienteWithTransactionsService {
 
         log.info("Buscando transações para o cliente com id: {}", id);
         List<TransactionEntity> transactions = transactionRepository.findTop10ByClienteIdOrderByRealizadaEmDesc(id);
-        log.info("Foram encontradas: {} transações para o cliente com id: {}", transactions.size(), id);
-
+        if (!transactions.isEmpty()){
+            log.info("Foram encontradas: {} transações para o cliente com id: {} e primeira descricao: {}", transactions.size(), id, transactions.get(0).getDescricao());
+        } else {
+            log.info("lista de transações vazia para o cliente com id: {}", id);
+        }
 
         return ClienteWithTransactionsDto.fromEntity(cliente, transactions);
     }

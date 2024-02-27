@@ -26,6 +26,7 @@ dependencies {
 	implementation 'org.postgresql:postgresql:42.7.1'
 	implementation 'org.projectlombok:lombok:1.18.22'
 	annotationProcessor 'org.projectlombok:lombok:1.18.22'
+	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
 }
 
 tasks.named('test') {

@@ -14,11 +14,11 @@ services:
       - ./002_dml.sql:/docker-entrypoint-initdb.d/02_dml.sql
     networks:
       - rinha-q1
-    deploy:
-      resources:
-        limits:
-            cpus: "0.6"
-            memory: "250MB"
+#    deploy:
+#      resources:
+#        limits:
+#            cpus: "0.4"
+#            memory: "100MB"
 
 
   api01:
@@ -36,8 +36,8 @@ services:
 #    deploy:
 #      resources:
 #        limits:
-#          cpus: "0.35"
-#          memory: "125MB"
+#          cpus: "0.4"
+#          memory: "200MB"
 
   api02:
     build:
@@ -54,8 +54,8 @@ services:
 #    deploy:
 #      resources:
 #        limits:
-#          cpus: "0.35"
-#          memory: "125MB"
+#          cpus: "0.4"
+#          memory: "200MB"
 
   nginx:
     image: nginx:latest
@@ -69,11 +69,12 @@ services:
       - "9999:9999"
     networks:
       - rinha-q1
-    deploy:
-      resources:
-        limits:
-          cpus: "0.2"
-          memory: "50MB"
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: "0.3"
+#          memory: "50MB"
+
 
 
 networks:

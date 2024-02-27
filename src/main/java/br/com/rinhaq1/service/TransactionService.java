@@ -25,8 +25,8 @@ public class TransactionService {
     public TransactionDTO execute(Long Id, TransactionParams params) throws NotFoundException, UnprocessableEntity {
         Optional<ClienteEntity> cliente = clienteRepository.findById(Id);
 
-        if (!validateParams(params)) {
-            throw new UnprocessableEntity("Parâmetros inválidos.");
+        if (!validateParams(params) || !validateValue(params.valor())){
+          throw new UnprocessableEntity("Parâmetros inválidos.");
         } else if (cliente.isPresent()) {
             try {
                 return transactionExecutors.stream()
@@ -43,6 +43,13 @@ public class TransactionService {
     }
 
     private boolean validateParams(TransactionParams params) {
-        return params.descricao() != null && !params.descricao().isEmpty() && params.valor() > 0;
+        return
+                params.descricao() != null
+                        && !params.descricao().isBlank()
+                        && params.descricao().length() <= 10;
+    }
+
+    private boolean validateValue(String value) {
+        return value != null && !value.isBlank() && value.matches("^[0-9]*$");
     }
 }

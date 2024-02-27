@@ -32,8 +32,11 @@ public class ClientController {
     }
 
     @PostMapping("/{id}/transacoes")
-    public ResponseEntity<TransactionDTO> addTransaction(@RequestBody TransactionParams params, @PathVariable Long id) {
+    public ResponseEntity<TransactionDTO> addTransaction(@RequestBody TransactionParams params,
+                                                         @PathVariable Long id) {
         try {
+            if(params.valor().contains(".") || params.valor().contains(","))
+                throw new UnprocessableEntity("Valor inválido para transação.");
             log.info("Recebendo requisição para adicionar transação para o cliente com id: {} e parâmetros: {}", id, params);
             TransactionDTO foundTransactions = transactionService.execute(id, params);
             log.info("Transação adicionada com sucesso para o cliente com id: {}", id);
@@ -53,6 +56,9 @@ public class ClientController {
 
     @GetMapping("/{id}/extrato")
     public ResponseEntity<ClienteWithTransactionsDto> getClienteWithTransactions(@PathVariable Long id) {
+        if (id == null || id <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
         try {
             log.info("Recebendo requisição para buscar cliente com transações com id: {}", id);
             ClienteWithTransactionsDto foundCliente = getClienteWithTransactionsService.execute(id);
