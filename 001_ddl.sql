@@ -6,18 +6,7 @@ CREATE TABLE TB_CLIENTES (
 	name VARCHAR(50) NOT NULL,
 	limite INT8 NULL,
 	saldo INT8 NULL DEFAULT 0,
+	transactions text[] null,
 	CONSTRAINT CLIENTE_PKEY PRIMARY KEY (id),
 	CHECK (saldo >= -limite)
 );
-
-CREATE TABLE TB_TRANSACTIONS (
-	id BIGSERIAL NOT NULL,
-	descricao VARCHAR(10) NOT NULL CHECK (trim(descricao) IS NOT NULL),
-	realizada_em timestamptz NULL,
-	tipo BPCHAR(1) NULL,
-	valor INT8 NULL,
-	cliente_id INT8 NULL,
-	CONSTRAINT TRANSACTION_PKEY PRIMARY KEY (id),
-	CONSTRAINT FK_CLIENTE_ID FOREIGN KEY (cliente_id) REFERENCES TB_CLIENTES(id)
-);
-

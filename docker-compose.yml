@@ -1,4 +1,4 @@
-version: '3'
+version: '3.5'
 services:
   postgres:
     image: postgres:latest
@@ -14,14 +14,14 @@ services:
       - ./002_dml.sql:/docker-entrypoint-initdb.d/02_dml.sql
     networks:
       - rinha-q1
-#    deploy:
-#      resources:
-#        limits:
-#            cpus: "0.4"
-#            memory: "100MB"
+    deploy:
+      resources:
+        limits:
+            cpus: "0.7"
+            memory: "140MB"
 
 
-  api01:
+  api01: &api
     build:
       context: .
       dockerfile: Dockerfile
@@ -33,29 +33,19 @@ services:
       - DB_HOST=postgres
     networks:
       - rinha-q1
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: "0.4"
-#          memory: "200MB"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.3"
+          memory: "195MB"
 
   api02:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: jcrjuliano/rinha-q1-api
+    <<: *api
     hostname: api02
-    environment:
-      - DB_HOST=postgres
     ports:
       - "8082:8080"
-    networks:
-      - rinha-q1
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: "0.4"
-#          memory: "200MB"
+    environment:
+      - DB_HOST=postgres
 
   nginx:
     image: nginx:latest
@@ -65,19 +55,30 @@ services:
       - api01
       - api02
     ports:
-      # Obrigatório expor/usar a porta 9999 no load balancer!
       - "9999:9999"
     networks:
       - rinha-q1
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: "0.3"
-#          memory: "50MB"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: "20MB"
 
-
+#  pgAdmin:
+#    image: dpage/pgadmin4
+#    environment:
+#      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+#      PGADMIN_DEFAULT_PASSWORD: admin
+#      PGADMIN_LISTEN_PORT: 5050
+#      PGADMIN_LISTEN_ADDRESS: localhost
+#      PGADMIN_DEFAULT_SERVER: postgres
+#    depends_on:
+#      - postgres
+#    ports:
+#      - "5050:5050"
+#    networks:
+#      - rinha-q1
 
 networks:
   rinha-q1:
     driver: bridge
-

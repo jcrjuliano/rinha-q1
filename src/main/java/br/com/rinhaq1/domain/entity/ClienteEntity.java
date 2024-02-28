@@ -12,6 +12,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 
 @Entity
 @Table(name = "tb_clientes")
@@ -32,6 +34,9 @@ public class ClienteEntity {
 
     @Column(name = "saldo")
     private Long saldo;
+
+    @Column(columnDefinition = "text[]")
+    private List<String> transactions = List.of();
 
     public ClienteEntity(String nome, Long limite, Long saldo) {
         this.nome = nome;

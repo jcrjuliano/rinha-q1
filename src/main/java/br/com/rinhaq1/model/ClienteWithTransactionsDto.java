@@ -1,10 +1,10 @@
 package br.com.rinhaq1.model;
 
 import br.com.rinhaq1.domain.entity.ClienteEntity;
-import br.com.rinhaq1.domain.entity.TransactionEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -22,23 +22,33 @@ public class ClienteWithTransactionsDto {
         this.lastTransactions = lastTransactions;
     }
 
-    public static ClienteWithTransactionsDto fromEntity(ClienteEntity cliente, List<TransactionEntity> transactions) {
+    public static ClienteWithTransactionsDto fromEntity(ClienteEntity client) {
         OffsetDateTime data = OffsetDateTime.now(ZoneOffset.UTC);
-        Long clientSaldo = cliente.getSaldo() == null ? 0L : cliente.getSaldo();
         Saldo saldo = new Saldo(
-                clientSaldo,
+                client.getSaldo(),
                 data,
-                cliente.getLimite()
+                client.getLimite()
         );
+        List<String> transactions = client.getTransactions() == null ?
+                List.of() :
+                client.getTransactions().subList(0, Math.min(client.getTransactions().size(), 10));
 
         List<Transaction> returnTransactions = transactions.isEmpty() ? List.of() :
                 transactions.stream()
-                        .map(it ->
-                                new Transaction(
-                                        it.getValor(),
-                                        it.getTipo(),
-                                        it.getDescricao(),
-                                        it.getRealizadaEm()))
+                        .map(jsonString -> {
+                            try {
+                                JSONObject jsonObject = new JSONObject(jsonString);
+
+                                return new Transaction(
+                                        jsonObject.getLong("valor"),
+                                        jsonObject.getString("tipo").charAt(0),
+                                        jsonObject.getString("descricao"),
+                                        OffsetDateTime.parse(jsonObject.getString("realizadaEm"))
+                                );
+                            } catch (Exception e) {
+                                throw new RuntimeException("Erro ao converter JSON para Transaction", e);
+                            }
+                        })
                         .toList();
 
         return new ClienteWithTransactionsDto(saldo, returnTransactions);

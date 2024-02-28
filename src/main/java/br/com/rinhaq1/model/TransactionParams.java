@@ -1,9 +1,23 @@
 package br.com.rinhaq1.model;
 
 
-public record TransactionParams(String valor,
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 
-                                String tipo,
+public record TransactionParams(
+        @PositiveOrZero
+        @NotNull
+        @Min(0)
+        String valor,
 
-                                String descricao) {
+        @NotBlank
+        @Pattern(regexp = "^[cC|dD]$", message = "O campo deve ser 'c' ou 'd'.")
+        String tipo,
+
+        @Size(min = 1, max = 10)
+        String descricao) {
 }
