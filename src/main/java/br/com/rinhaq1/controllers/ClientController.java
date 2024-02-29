@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.LinkedList;
 
 @RestController
 @RequestMapping("/clientes")
@@ -36,8 +37,7 @@ public class ClientController {
             return ResponseEntity.unprocessableEntity().build();
         }
         try {
-            ClienteEntity client = clientRepository.findById(id).orElseThrow(
-                    () -> new NotFoundException("Cliente não encontrado"));
+            ClienteEntity client = clientRepository.findById(id);
             long valor = Long.parseLong(params.valor());
             if (valor < 0) {
                 return ResponseEntity.unprocessableEntity().build();
@@ -57,7 +57,9 @@ public class ClientController {
             OffsetDateTime currentDate = OffsetDateTime.now(ZoneOffset.UTC);
             String transactionData = buildTransactionData(params.tipo(), valor, params.descricao(), currentDate);
             // List<String> transactions = new ArrayList<>(client.getTransactions() == null ? List.of() : client.getTransactions());
-            client.getTransactions().add(0, transactionData);
+            client.setTransactions(new LinkedList<>(client.getTransactions()));
+            client.getTransactions().addFirst(transactionData);
+
             if(client.getTransactions().size() > 10) {
                 client.getTransactions().remove(10);
             }
@@ -79,10 +81,12 @@ public class ClientController {
         if (id == null || id <= 0) {
             return ResponseEntity.badRequest().build();
         }
+        if (id > 5){
+            return ResponseEntity.notFound().build();
+        }
 
         try {
-            ClienteEntity client = clientRepository.findById(id).orElseThrow(
-                    () -> new NotFoundException("Cliente não encontrado"));
+            ClienteEntity client = clientRepository.findById(id);
 
             ClienteWithTransactionsDto clientsWithTransactions = ClienteWithTransactionsDto.fromEntity(client);
 

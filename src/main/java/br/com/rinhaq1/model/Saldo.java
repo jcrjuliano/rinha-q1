@@ -1,15 +1,9 @@
 package br.com.rinhaq1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.OffsetDateTime;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Saldo {
     private Long total = 0L;
 
@@ -18,4 +12,34 @@ public class Saldo {
 
     private Long limite = 0L;
 
+
+    public Long getTotal() {
+        return total;
+    }
+
+    public void setTotal(Long total) {
+        this.total = total;
+    }
+
+    public OffsetDateTime getDataExtrato() {
+        return dataExtrato;
+    }
+
+    public void setDataExtrato(OffsetDateTime dataExtrato) {
+        this.dataExtrato = dataExtrato;
+    }
+
+    public Long getLimite() {
+        return limite;
+    }
+
+    public void setLimite(Long limite) {
+        this.limite = limite;
+    }
+
+    public Saldo(Long total, OffsetDateTime dataExtrato, Long limite) {
+        this.total = total;
+        this.dataExtrato = dataExtrato;
+        this.limite = limite;
+    }
 }

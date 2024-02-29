@@ -8,18 +8,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 
 @Entity
 @Table(name = "tb_clientes")
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class ClienteEntity {
 
     @Id
@@ -50,5 +44,57 @@ public class ClienteEntity {
 
     public ClienteReturnDto toDto() {
         return new ClienteReturnDto(id, nome, limite, saldo);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public Long getLimite() {
+        return limite;
+    }
+
+    public void setLimite(Long limite) {
+        this.limite = limite;
+    }
+
+    public Long getSaldo() {
+        return saldo;
+    }
+
+    public void setSaldo(Long saldo) {
+        this.saldo = saldo;
+    }
+
+    public List<String> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<String> transactions) {
+        this.transactions = transactions;
+    }
+
+    public ClienteEntity() {
+
+    }
+
+    public ClienteEntity(Long id, String nome, Long limite, Long saldo, List<String> transactions) {
+        this.id = id;
+        this.nome = nome;
+        this.limite = limite;
+        this.saldo = saldo;
+        this.transactions = transactions;
     }
 }
