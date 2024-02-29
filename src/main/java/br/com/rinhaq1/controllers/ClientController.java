@@ -10,8 +10,6 @@ import br.com.rinhaq1.model.TransactionParams;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.List;
 
 @RestController
 @RequestMapping("/clientes")
@@ -33,7 +30,6 @@ public class ClientController {
     }
 
     @PostMapping("/{id}/transacoes")
-    @Transactional(isolation = Isolation.READ_COMMITTED)
     public ResponseEntity<TransactionDTO> addTransaction(@RequestBody @Valid TransactionParams params,
                                                          @PathVariable Long id) {
         if (!validateParams(params)) {
@@ -60,9 +56,11 @@ public class ClientController {
             }
             OffsetDateTime currentDate = OffsetDateTime.now(ZoneOffset.UTC);
             String transactionData = buildTransactionData(params.tipo(), valor, params.descricao(), currentDate);
-            List<String> transactions = new java.util.ArrayList<>(client.getTransactions() == null ? List.of() : client.getTransactions());
-            transactions.add(0, transactionData);
-            client.setTransactions(transactions);
+            // List<String> transactions = new ArrayList<>(client.getTransactions() == null ? List.of() : client.getTransactions());
+            client.getTransactions().add(0, transactionData);
+            if(client.getTransactions().size() > 10) {
+                client.getTransactions().remove(10);
+            }
             clientRepository.save(client);
             TransactionDTO returnData = new TransactionDTO(client.getLimite(), client.getSaldo());
             return ResponseEntity.ok(returnData);
@@ -77,7 +75,6 @@ public class ClientController {
 
 
     @GetMapping("/{id}/extrato")
-    @Transactional(isolation = Isolation.READ_COMMITTED)
     public ResponseEntity<ClienteWithTransactionsDto> getClienteWithTransactions(@PathVariable Long id) {
         if (id == null || id <= 0) {
             return ResponseEntity.badRequest().build();

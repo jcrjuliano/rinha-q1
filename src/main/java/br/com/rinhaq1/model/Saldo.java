@@ -11,10 +11,11 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Saldo {
-    private Long total;
+    private Long total = 0L;
 
     @JsonProperty("data_extrato")
     private OffsetDateTime dataExtrato;
-    private Long limite;
+
+    private Long limite = 0L;
 
 }
