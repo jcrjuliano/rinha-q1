@@ -35,26 +35,22 @@ public class ClienteRepository {
                 "ELSE " +
                 "array_prepend(?, transactions) " +
                 "END " +
-                "WHERE id = ?";
-        String selectQuery = "SELECT limite, saldo FROM tb_clientes WHERE id = ?";
+                "WHERE id = ? " +
+                "RETURNING limite, saldo;";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(updateQuery)) {
             statement.setLong(1, newValue);
             statement.setString(2, transactionData);
             statement.setString(3, transactionData);
             statement.setLong(4, clientId);
-            statement.executeUpdate();
-
-            PreparedStatement selectStatement = connection.prepareStatement(selectQuery);
-            selectStatement.setLong(1, clientId);
-            try (ResultSet resultSet = selectStatement.executeQuery()) {
+            try(ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     return new TransactionDTO(resultSet.getLong("limite"), resultSet.getLong("saldo"));
                 }
             }
 
-        } catch (SQLException e) {
-            throw new UnprocessableEntity("Erro ao processar transação");
+            } catch (SQLException ex) {
+            throw new UnprocessableEntity(ex.getMessage());
         }
         throw new NotFoundException("Cliente não encontrado");
     }
