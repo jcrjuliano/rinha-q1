@@ -2,6 +2,9 @@ package br.com.rinhaq1.domain.repository;
 
 import br.com.rinhaq1.domain.entity.ClienteEntity;
 import br.com.rinhaq1.exception.NotFoundException;
+import br.com.rinhaq1.exception.UnprocessableEntity;
+import br.com.rinhaq1.model.TransactionDTO;
+import br.com.rinhaq1.model.TransactionParams;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -22,19 +25,38 @@ public class ClienteRepository {
         this.dataSource = dataSource;
     }
 
-    public void save(ClienteEntity cliente) {
-        String sql = "UPDATE tb_clientes SET name=?, limite=?, saldo=?, transactions=? WHERE id=?";
+    public TransactionDTO searchAndUpdateClient(TransactionParams params, String transactionData, long clientId) {
+        long newValue = params.tipo().equalsIgnoreCase("c") ? Long.parseLong(params.valor()) : -Long.parseLong(params.valor());
+        String updateQuery =  "UPDATE tb_clientes " +
+                "SET saldo = saldo + ?, " +
+                "transactions = CASE " +
+                "WHEN array_length(transactions, 1) >= 10 " +
+                "THEN array_prepend(?, transactions[1:9]) " +
+                "ELSE " +
+                "array_prepend(?, transactions) " +
+                "END " +
+                "WHERE id = ?";
+        String selectQuery = "SELECT limite, saldo FROM tb_clientes WHERE id = ?";
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, cliente.getNome());
-            statement.setLong(2, cliente.getLimite());
-            statement.setLong(3, cliente.getSaldo());
-            statement.setArray(4, connection.createArrayOf("text", cliente.getTransactions().toArray()));
-            statement.setLong(5, cliente.getId());
+             PreparedStatement statement = connection.prepareStatement(updateQuery)) {
+            statement.setLong(1, newValue);
+            statement.setString(2, transactionData);
+            statement.setString(3, transactionData);
+            statement.setLong(4, clientId);
             statement.executeUpdate();
+
+            PreparedStatement selectStatement = connection.prepareStatement(selectQuery);
+            selectStatement.setLong(1, clientId);
+            try (ResultSet resultSet = selectStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return new TransactionDTO(resultSet.getLong("limite"), resultSet.getLong("saldo"));
+                }
+            }
+
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new UnprocessableEntity("Erro ao processar transação");
         }
+        throw new NotFoundException("Cliente não encontrado");
     }
 
 

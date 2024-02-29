@@ -42,30 +42,11 @@ public class ClientController {
             if (valor < 0) {
                 return ResponseEntity.unprocessableEntity().build();
             }
-            if (params.tipo().equalsIgnoreCase("c")) {
-                client.setSaldo(client.getSaldo() + valor);
 
-            } else if (params.tipo().equalsIgnoreCase("d")) {
-                long newBalance = client.getSaldo() - valor;
-                if (newBalance < -client.getLimite()) {
-                    return ResponseEntity.unprocessableEntity().build();
-                }
-                client.setSaldo(newBalance);
-            } else {
-                return ResponseEntity.unprocessableEntity().build();
-            }
             OffsetDateTime currentDate = OffsetDateTime.now(ZoneOffset.UTC);
             String transactionData = buildTransactionData(params.tipo(), valor, params.descricao(), currentDate);
-            // List<String> transactions = new ArrayList<>(client.getTransactions() == null ? List.of() : client.getTransactions());
-            client.setTransactions(new LinkedList<>(client.getTransactions()));
-            client.getTransactions().addFirst(transactionData);
 
-            if(client.getTransactions().size() > 10) {
-                client.getTransactions().remove(10);
-            }
-            clientRepository.save(client);
-            TransactionDTO returnData = new TransactionDTO(client.getLimite(), client.getSaldo());
-            return ResponseEntity.ok(returnData);
+            return ResponseEntity.ok(clientRepository.searchAndUpdateClient(params, transactionData, id));
         } catch (UnprocessableEntity | IllegalArgumentException e) {
             return ResponseEntity.unprocessableEntity().build();
         } catch (NotFoundException e) {
@@ -94,7 +75,7 @@ public class ClientController {
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.unprocessableEntity().build();
         }
     }
 

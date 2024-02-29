@@ -18,7 +18,7 @@ services:
       resources:
         limits:
             cpus: "0.5"
-            memory: "130MB"
+            memory: "100MB"
 
 
   api01: &api
@@ -37,7 +37,7 @@ services:
       resources:
         limits:
           cpus: "0.4"
-          memory: "200MB"
+          memory: "210MB"
 
   api02:
     <<: *api
@@ -60,7 +60,7 @@ services:
       resources:
         limits:
           cpus: "0.2"
-          memory: "20MB"
+          memory: "30MB"
 
 networks:
   rinha-q1:
